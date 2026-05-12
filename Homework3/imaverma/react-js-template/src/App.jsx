@@ -1,6 +1,7 @@
 import RenderOptions from "./component/options";
 import { BarChart } from "./component/example";
 import { LineChart } from './component/LineChart';
+import { TSNEScatter } from './component/TSNEScatter';
 import { useState } from 'react';
 function App() {
   const [selectedStock, setSelectedStock] = useState('AAPL');
@@ -35,7 +36,7 @@ function App() {
               View 2 to be replaced by the view title
             </h3>
             <div className="border-2 border-gray-300 rounded-xl h-[calc(100%_-_2rem)]">
-              <p className="text-center text-gray-500 mt-20">Empty View 2</p>
+              <TSNEScatter selectedStock={selectedStock} />
             </div>
           </div>
         </div>
