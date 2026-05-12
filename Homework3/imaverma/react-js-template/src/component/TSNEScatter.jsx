@@ -67,26 +67,34 @@ function drawChart(svgElement, selectedStock, width, height) {
       .domain([d3.min(data, d => d.tsne_2) - 5, d3.max(data, d => d.tsne_2) + 5])
       .range([height - margin.bottom, margin.top]);
 
-    // Zoom behavior
-    const zoom = d3.zoom()
-      .scaleExtent([0.5, 10])
-      .on('zoom', (event) => {
-        plotGroup.attr('transform', event.transform);
-      });
+    const chartGroup = svg.append('g');
 
-    svg.call(zoom);
-
-    const plotGroup = svg.append('g');
-
-    // X axis
-    svg.append('g')
+    const xAxisG = chartGroup.append('g')
       .attr('transform', `translate(0, ${height - margin.bottom})`)
       .call(d3.axisBottom(xScale).ticks(5));
 
-    // Y axis
-    svg.append('g')
+    const yAxisG = chartGroup.append('g')
       .attr('transform', `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(yScale).ticks(5));
+
+    const plotGroup = chartGroup.append('g');
+
+    const zoom = d3.zoom()
+      .scaleExtent([0.5, 10])
+      .on('zoom', (event) => {
+        const newX = event.transform.rescaleX(xScale);
+        const newY = event.transform.rescaleY(yScale);
+        xAxisG.call(d3.axisBottom(newX).ticks(5));
+        yAxisG.call(d3.axisLeft(newY).ticks(5));
+        plotGroup.selectAll('circle')
+          .attr('cx', d => newX(d.tsne_1))
+          .attr('cy', d => newY(d.tsne_2));
+        plotGroup.selectAll('text.stock-label')
+          .attr('x', d => newX(d.tsne_1) + 12)
+          .attr('y', d => newY(d.tsne_2) + 4);
+      });
+
+    svg.call(zoom);
 
     // Axis labels
     svg.append('text')
