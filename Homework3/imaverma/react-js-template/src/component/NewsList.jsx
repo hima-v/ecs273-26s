@@ -23,7 +23,7 @@ export function NewsList({ selectedStock }) {
   }, []);
 
   useEffect(() => {
-    setExpandedIndex(null);
+    setExpandedIndex(0);  //for bonus point i have set the expanded index to 0 thanks!
     setArticles([]);
 
     const newsFiles = import.meta.glob('/data/stocknews/**/!(*%*).txt', {
