@@ -26,33 +26,34 @@ export function NewsList({ selectedStock }) {
     setExpandedIndex(null);
     setArticles([]);
 
-    const newsFiles = import.meta.glob('/data/stocknews/**/*.txt', { as: 'raw', eager: true });
+    const newsFiles = import.meta.glob('/data/stocknews/**/!(*%*).txt', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    });
 
     const matchingFiles = Object.entries(newsFiles).filter(([path]) =>
       path.includes(`/stocknews/${selectedStock}/`)
     );
 
-    Promise.all(
-      matchingFiles.map(async ([path, load]) => {
-        const raw = await load();
-        const titleMatch = raw.match(/^Title:\s*(.+)/m);
-        const dateMatch = raw.match(/^Date:\s*(.+)/m);
-        const urlMatch = raw.match(/^URL:\s*(.+)/m);
-        const contentStart = raw.indexOf('\n\n', raw.indexOf('URL:'));
-        const content = contentStart !== -1 ? raw.slice(contentStart).trim() : raw;
+    const results = matchingFiles.map(([path, raw]) => {
+      const titleMatch = raw.match(/^Title:\s*(.+)/m);
+      const dateMatch = raw.match(/^Date:\s*(.+)/m);
+      const urlMatch = raw.match(/^URL:\s*(.+)/m);
+      const contentStart = raw.indexOf('\n\n', raw.indexOf('URL:'));
+      const content = contentStart !== -1 ? raw.slice(contentStart).trim() : raw;
 
-        return {
-          title: titleMatch ? titleMatch[1].trim() : 'No Title',
-          date: dateMatch ? dateMatch[1].trim() : 'No Date',
-          url: urlMatch ? urlMatch[1].trim() : '#',
-          content,
-          path,
-        };
-      })
-    ).then(results => {
-      results.sort((a, b) => b.date.localeCompare(a.date));
-      setArticles(results);
+      return {
+        title: titleMatch ? titleMatch[1].trim() : 'No Title',
+        date: dateMatch ? dateMatch[1].trim() : 'No Date',
+        url: urlMatch ? urlMatch[1].trim() : '#',
+        content,
+        path,
+      };
     });
+
+    results.sort((a, b) => b.date.localeCompare(a.date));
+    setArticles(results);
   }, [selectedStock]);
 
   const toggleExpand = (index) => {
