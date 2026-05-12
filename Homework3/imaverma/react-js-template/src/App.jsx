@@ -1,6 +1,9 @@
 import RenderOptions from "./component/options";
 import { BarChart } from "./component/example";
+import { LineChart } from './component/LineChart';
+import { useState } from 'react';
 function App() {
+  const [selectedStock, setSelectedStock] = useState('AAPL');
   return (
     <div className="flex flex-col h-full w-full">
       <header className="bg-zinc-400 text-white p-2 flex flex-row align-center">
@@ -10,6 +13,8 @@ function App() {
           <select
             id="bar-select"
             className="bg-white text-black p-2 rounded mx-2"
+            value={selectedStock}
+            onChange={(e) => setSelectedStock(e.target.value)}
           >
             <RenderOptions />
           </select>
@@ -17,15 +22,15 @@ function App() {
       </header>
       <div className="flex flex-row h-full w-full">
         <div className="flex flex-col w-2/3">
-          <div className="h-1/4 p-2">
+          <div className="h-1/2 p-2">
             <h3 className="text-left text-xl">
               View 1 to be replaced by the view title
             </h3>
             <div className="border-2 border-gray-300 rounded-xl">
-              <BarChart />
+              <LineChart selectedStock={selectedStock} />
             </div>
           </div>
-          <div className="h-3/4 p-2">
+          <div className="h-1/2 p-2">
             <h3 className="text-left text-xl h-8">
               View 2 to be replaced by the view title
             </h3>
