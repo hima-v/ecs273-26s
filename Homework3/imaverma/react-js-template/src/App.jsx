@@ -1,5 +1,5 @@
 import RenderOptions from "./component/options";
-import { BarChart } from "./component/example";
+// import { BarChart } from "./component/example"; i commented this example cause i cleaned up the files (deleted demo json and exampple)
 import { LineChart } from './component/LineChart';
 import { TSNEScatter } from './component/TSNEScatter';
 import { NewsList } from './component/NewsList';
